@@ -43,7 +43,7 @@ JSON Schema:
     """
     try:
         response = openai.chat.completions.create(
-            model="gpt-4-1106-preview",
+            model="gpt-3.5-turbo",
             messages=[{"role": "system", "content": system_prompt},
                       {"role": "user", "content": text_input}],
             temperature=0.0,

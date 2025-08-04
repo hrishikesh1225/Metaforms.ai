@@ -28,9 +28,8 @@ Given the time constraints, my primary goal was to build a functional product. T
    - Supported input via `.txt` and `.pdf` files for text, and `.json`/`.txt` for schemas.
 
 5. **Output Formatting Issues**  
-   - Noticed model-specific formatting issues.  
-   - Switched temporarily to `gpt-3.5-turbo` which handled output formatting better.  
-   - Eventually resolved the issue and reverted to GPT-4 Turbo.
+   - Noticed model-specific formatting issues with GPT-4 Turbo which got fixed eventually.  
+   - Switched to `gpt-3.5-turbo` which handled output formatting better along with less hallucinations.  
 
 6. **Deployment & Secrets Management**  
    - Successfully deployed a local working web app.  

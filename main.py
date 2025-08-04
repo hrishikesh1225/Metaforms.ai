@@ -35,7 +35,7 @@ def convert_to_json(text_input, schema_content):
 
     system_prompt = f"""
 You are an expert data extraction tool. Your task is to convert the user's text into a valid JSON object
-that strictly adheres to the following JSON schema. Do not add or make up any fields that are not in the JSON schema given to you below.
+that strictly adheres to the following JSON schema and do not add any extra fields. Do not add and make up any fields that are not in the JSON schema given to you.
 Ensure all required fields are present. Output ONLY the JSON object, with no additional text or explanations.
 
 JSON Schema:

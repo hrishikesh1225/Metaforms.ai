@@ -1,8 +1,9 @@
+
 # Implementation Log – Steps Taken, Challenges Faced, Insights Gained
 
 **Date:** 2025-08-04
 
-## Overview
+## Overview  
 Given the time constraints, my primary goal was to build a functional product. The log below outlines the steps I took, the problems I encountered, how I resolved them, and possible areas for future improvement.
 
 ## Step-by-Step Breakdown
@@ -18,16 +19,17 @@ Given the time constraints, my primary goal was to build a functional product. T
 
 3. **Prompt Engineering & Model Upgrade**  
    - Iterated over different prompt formulations for optimal performance.  
-   - Switched to the `gpt-4-1106-preview` (GPT-4 Turbo) model after discovering it allowed more tokens.
+   - Put significant effort into ensuring the prompt followed the schema correctly.  
+   - Switched to the `gpt-4-1106-preview` (GPT-4 Turbo) model after discovering it allowed more tokens.
 
 4. **Web Application via Streamlit**  
    - Chose Streamlit due to its speed and Python compatibility.  
    - Built a user-friendly UI for uploading or pasting files and schemas.  
-   - Supported input via `.txt` and `.pdf` files for text, and `.json`/`.txt` for schemas.
+   - Supported input via `.txt` and `.pdf` files for text, and `.json`/`.txt` for schemas.
 
 5. **Output Formatting Issues**  
    - Noticed model-specific formatting issues.  
-   - Switched temporarily to `gpt-3.5-turbo` which handled output formatting better.  
+   - Switched temporarily to `gpt-3.5-turbo` which handled output formatting better.  
    - Eventually resolved the issue and reverted to GPT-4 Turbo.
 
 6. **Deployment & Secrets Management**  
@@ -40,7 +42,9 @@ Given the time constraints, my primary goal was to build a functional product. T
 - Chunking and summarization are critical when dealing with token-limited LLMs.  
 - Prompt structure plays a significant role in the quality of outputs.  
 - Formatting and parsing issues can vary widely across models.  
-- Managing secrets during deployment is essential to avoid compromising security.
+- Managing secrets during deployment is essential to avoid compromising security.  
+- Learned the importance of iterating on prompts to align tightly with a given schema.  
+- Gained awareness of how schema validation could help catch malformed or incomplete outputs earlier in the pipeline.
 
 ## Future Improvements
 
@@ -49,7 +53,8 @@ Given the time constraints, my primary goal was to build a functional product. T
 - Experiment with RAG (Retrieval-Augmented Generation) architecture to manage and search large text corpora.  
 - Implement similarity-based chunk retrieval and answer aggregation.  
 - Add more robust input validation and error handling.  
-- Extend file support to additional formats (e.g., docx, csv, yaml).
+- Extend file support to additional formats (e.g., docx, csv, yaml).  
+- Integrate schema validation to automatically check model outputs for compliance and catch errors proactively.
 
 ## Conclusion
 

@@ -46,11 +46,11 @@ JSON Schema:
             model="gpt-4-1106-preview",
             messages=[{"role": "system", "content": system_prompt},
                       {"role": "user", "content": text_input}],
-            temperature=0.1,
+            temperature=0.0,
             response_format={"type": "json_object"}
         )
         json_output = response.choices[0].message.content
-        
+
         parsed_output = json.loads(json_output)
         schema_dict = json.loads(schema_content)
         try:

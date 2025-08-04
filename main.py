@@ -42,10 +42,11 @@ JSON Schema:
     """
     try:
         response = openai.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-1106-preview",
             messages=[{"role": "system", "content": system_prompt},
                       {"role": "user", "content": text_input}],
             temperature=0.1,
+            response_format={"type": "json_object"}
         )
         json_output = response.choices[0].message.content
         json.loads(json_output)
@@ -63,7 +64,7 @@ JSON Schema:
 
 # Streamlit App Layout
 st.set_page_config(page_title="Universal JSON Converter", page_icon="⚙️")
-st.title("⚙️ Universal Text-to-JSON Converter")
+st.title("Metaforms.ai Assignment")
 st.write(
     "Upload your data (text or PDF) and a JSON schema, and the AI will perform the conversion. "
     "File uploads take priority over pasted text."
@@ -121,7 +122,6 @@ if st.button("Convert to JSON", type="primary"):
         with st.spinner("Converting... Please wait."):
             json_result = convert_to_json(final_input_text, final_schema_content)
             if json_result:
-                st.subheader("Conversion Successful!")
                 st.json(json_result)
     else:
         pass

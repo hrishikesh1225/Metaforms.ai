@@ -61,3 +61,7 @@ Design and implement a solution that:
 
 ---
 
+## Usage
+
+- Use the link provided as it contains the api-key and has been deployed for easy access. https://metaformsai-assignment.streamlit.app
+- For local usage you will be required to add your own openai api key. 

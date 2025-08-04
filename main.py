@@ -4,6 +4,7 @@ import json
 import os
 from PyPDF2 import PdfReader
 from io import StringIO
+from jsonschema import validate, ValidationError
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -49,8 +50,20 @@ JSON Schema:
             response_format={"type": "json_object"}
         )
         json_output = response.choices[0].message.content
-        json.loads(json_output)
+        
+        parsed_output = json.loads(json_output)
+        schema_dict = json.loads(schema_content)
+        try:
+            validate(instance=parsed_output, schema=schema_dict)
+        except ValidationError as ve:
+            st.error(f"The output JSON does not match the schema: {ve.message}")
+            st.text_area("Invalid Output:", value=json_output, height=200)
+            return None
+
         return json_output
+
+        # json.loads(json_output)
+        # return json_output
     except openai.OpenAIError as e:
         st.error(f"An error occurred with the OpenAI API: {e}")
     except json.JSONDecodeError:
@@ -102,8 +115,9 @@ if st.button("Convert to JSON", type="primary"):
         if input_file.type == "application/pdf":
             final_input_text = extract_text_from_pdf(input_file)
         else: 
-            stringio = StringIO(input_file.getvalue().decode("utf-8"))
-            final_input_text = stringio.read()
+            final_input_text = input_file.getvalue().decode("utf-8")
+            # stringio = StringIO(input_file.getvalue().decode("utf-8"))
+            # final_input_text = stringio.read()
     elif input_text_area.strip():
         final_input_text = input_text_area
     else:

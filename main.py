@@ -1,9 +1,9 @@
-import streamlit as st
-import openai
-import json
 import os
-from PyPDF2 import PdfReader
+import json
+import openai
+import streamlit as st
 from io import StringIO
+from PyPDF2 import PdfReader
 from jsonschema import validate, ValidationError
 
 openai.api_key = os.getenv("OPENAI_API_KEY")

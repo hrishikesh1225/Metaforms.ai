@@ -39,7 +39,7 @@ def convert_to_intermediate(text_input):
     Do not validate against any schema. Just structure the meaning.
     """
     response = openai.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o", #Upgrade to turbo models for larger token limits
         messages=[
             {"role": "system", "content": system_prompt_stage1},
             {"role": "user", "content": text_input}

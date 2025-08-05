@@ -75,12 +75,6 @@ def convert_structured_to_json(intermediate_data, schema_content):
         )
         output = json.loads(response.choices[0].message.content)
 
-        # Optional post-processing patch (if model misses it)
-        if output.get("runs", {}).get("using") == "composite" and "outputs" in output:
-            for key, val in output["outputs"].items():
-                if "value" not in val and key == "page-url":
-                    val["value"] = "${{ steps.deploy.outputs.page_url }}"
-
         return output
     except openai.RateLimitError as e:
         st.error("Token limit exceeded.")

@@ -1,7 +1,6 @@
-
 # Solution Design Document – Architecture, Major Design Choices, and Rationale
 
-**Date:** 2025-08-04
+**Date:** 2025-08-04 (Updated 2025-08-05)
 
 ## Overview
 
@@ -11,45 +10,57 @@ This document outlines the architectural decisions, major design choices, and th
 
 ## Architecture Summary
 
-The system architecture is designed with simplicity and rapid deployment in mind. It comprises the following major components:
+The system is now designed as a **two-stage transformation pipeline** that is schema-agnostic at first, and schema-conforming in the second phase. It comprises the following major components:
 
 - **Frontend Interface**: Built using Streamlit for user interaction, file uploads, and displaying outputs.
-- **Backend Logic**: Powered by Python to handle input processing, prompt generation, schema validation, and communication with OpenAI's API.
-- **LLM Integration**: Utilizes OpenAI’s `gpt-4-1106-preview` model for its higher token limits and better performance with complex inputs.
+- **Backend Logic**: Uses Python to process input, extract structured meaning, apply schema constraints, and validate outputs.
+- **Two-Stage LLM Integration**:
+  - Stage 1: Extracts structured intermediate JSON from free-form input
+  - Stage 2: Converts structured data into a strict schema-compliant JSON object
+- **Validation Layer**: Employs the `jsonschema` library to validate generated output against user-uploaded schemas.
 - **Deployment**: Uses Streamlit sharing and GitHub for version control and secure deployment, with `.env` handling for API key management.
 
 ---
 
 ## Major Design Choices & Rationale
 
-### 1. **Use of OpenAI's API**
+### 1. **Two-Stage Pipeline (Intermediate Representation → Schema Mapping)**
 
-- **Rationale**: Chosen due to the wide variety of powerful models, prior familiarity, and consistently strong performance across use cases.
-- **Benefits**: Quick integration, reliable results, good support and documentation.
+- **Rationale**: Simplifies the model's task by decoupling understanding from validation.
+- **Benefits**:
+  - Avoids hallucinated or invalid outputs
+  - Ensures outputs are cleanly validated against schema
+  - Enables debugging and inspection of intermediate output
 
-### 2. **Prompt Engineering & Schema Focus**
+### 2. **Explicit Prompt Engineering in Each Stage**
 
-- **Rationale**: Prompt engineering was essential to reduce hallucinations and increase schema compliance, which is often a challenge with LLMs.
-- **Focus**: Iteratively refined prompts to ensure outputs aligned with user-provided schemas.
-- **Later Emphasis**: Shifted focus toward validation techniques to catch hallucinations and ensure output quality.
+- **Stage 1**: Focused on semantic extraction of entities and fields without schema constraints.
+- **Stage 2**: Focused on strict mapping to the user’s JSON schema.
 
-### 3. **High Token Limit Model Selection**
+This modularity allowed fine-grained control over model behavior and error resolution.
 
-- **Rationale**: Larger token context in GPT-4 Turbo allowed for processing longer inputs without aggressive chunking.
-- **Trade-Off Avoided**: This reduced the need for complex chunking strategies and avoided the implementation of agentic decomposition logic under time constraints.
+### 3. **Schema Validation with jsonschema**
 
-### 4. **Streamlit for Frontend and Deployment**
+- **Rationale**: Ensures that the final JSON output meets all structural and type constraints defined by the user.
+- **Integration**: Validation failures trigger user-visible error messages and display the invalid output for debugging.
 
-- **Rationale**: Streamlit offers a fast, simple, Python-native way to create UIs and deploy web applications.
-- **Benefits**: Rapid prototyping, ease of integration with GitHub, built-in support for deploying apps, and minimal setup time.
+### 4. **Use of GPT-4o**
+
+- **Rationale**: Selected for its higher context length and performance, while minimizing hallucinations.
+- **Fallback Strategy**: Prompts are optimized to stay under the token limit, and manual fallbacks are added for common cases like missing required keys (e.g., `outputs.value`).
+
+### 5. **Post-Processing Safeguards**
+
+- **Example**: If outputs are missing `value` fields, the system inserts known defaults when appropriate (e.g., for `page-url`).
 
 ---
 
 ## Future Considerations
 
-- Introduce chunking and agentic pipelines if using lower-token models.
-- Add real-time schema validation feedback to improve trust and reliability.
-- Explore alternative LLM providers or models for cost-performance trade-offs.
+- Add token estimators for inputs and schemas
+- Allow batch input processing for test cases
+- Add visual schema explorer
+- Introduce dynamic prompt tuning based on schema complexity
+- Support multi-model fallback and optimization for cost vs performance
 
 ---
-

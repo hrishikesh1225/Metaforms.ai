@@ -1,7 +1,6 @@
-
 # Implementation Log – Steps Taken, Challenges Faced, Insights Gained
 
-**Date:** 2025-08-04
+**Date:** 2025-08-04 (Updated 2025-08-05)
 
 ## Overview  
 Given the time constraints, my primary goal was to build a functional product. The log below outlines the steps I took, the problems I encountered, how I resolved them, and possible areas for future improvement.
@@ -14,47 +13,52 @@ Given the time constraints, my primary goal was to build a functional product. T
    - Ran into issues due to token limitations when processing large input files.
 
 2. **Token Constraint Workaround**  
-   - Implemented chunking strategies with overlapping windows to summarize inputs.  
-   - Explored use of agentic AI theoretically for better structuring by providing tools to decompose and reassemble information. Could not implement due to complexity and time.
+   - Initially explored chunking strategies and overlapping windows for input summarization.  
+   - Also researched agentic AI approaches for decomposition but couldn’t implement them due to time.
 
-3. **Prompt Engineering & Model Upgrade**  
-   - Iterated over different prompt formulations for optimal performance.  
-   - Put significant effort into ensuring the prompt followed the schema correctly.  
-   - Switched to the `gpt-4-1106-preview` (GPT-4 Turbo) model after discovering it allowed more tokens.
+3. **Prompt Engineering and Model Upgrade**  
+   - Refined multiple prompt templates to reduce hallucinations and improve alignment with user schemas.  
+   - Originally switched to `gpt-3.5-turbo` for faster output and fewer hallucinations.  
+   - Ultimately migrated to `gpt-4o` for more consistent results, better token efficiency, and extended context window.
 
-4. **Web Application via Streamlit**  
-   - Chose Streamlit due to its speed and Python compatibility.  
-   - Built a user-friendly UI for uploading or pasting files and schemas.  
-   - Supported input via `.txt` and `.pdf` files for text, and `.json`/`.txt` for schemas.
+4. **Shift to Two-Stage Transformation Pipeline**  
+   - Introduced an intermediate structured format extracted from raw input (Stage 1).  
+   - Created a second stage that maps the structured JSON into a schema-compliant format.  
+   - This separation greatly improved both accuracy and debuggability.
 
-5. **Output Formatting Issues**  
-   - Noticed model-specific formatting issues with GPT-4 Turbo which got fixed eventually.  
-   - Switched to `gpt-3.5-turbo` which handled output formatting better along with less hallucinations.  
+5. **Web Application via Streamlit**  
+   - Built a clean and interactive Streamlit UI.  
+   - Supported file upload (.txt, .pdf) and schema upload (.json, .txt).  
+   - Used columns and text areas for dual input modes.
 
-6. **Deployment & Secrets Management**  
-   - Successfully deployed a local working web app.  
-   - Attempted to push code to GitHub but ran into issues with `.env` secrets being tracked.  
-   - Used Streamlit’s community deployment tools to securely manage API keys without exposing them.
+6. **Schema Validation Using `jsonschema`**  
+   - Integrated Python’s `jsonschema` package to validate the final model output.  
+   - Captured and displayed validation errors to help users debug non-conforming outputs.
+
+7. **Post-Processing Safeguards**  
+   - For edge cases where the LLM missed required fields (e.g., missing `value` for `outputs`), added fallback rules manually.  
+   - This prevented unnecessary failures due to predictable omissions.
+
+8. **Deployment and Secrets Management**  
+   - Deployed locally and on Streamlit Cloud.  
+   - Used environment variables and Streamlit Secrets for secure API key handling.
 
 ## Insights Gained
 
-- Chunking and summarization are critical when dealing with token-limited LLMs.  
-- Prompt structure plays a significant role in the quality of outputs.  
-- Formatting and parsing issues can vary widely across models.  
-- Managing secrets during deployment is essential to avoid compromising security.  
-- Learned the importance of iterating on prompts to align tightly with a given schema.  
-- Gained awareness of how schema validation could help catch malformed or incomplete outputs earlier in the pipeline.
+- Two-stage pipelines work better than single prompts when schema compliance is critical.  
+- Token-efficient models (like GPT-4o) handle longer documents without chunking.  
+- Breaking down the problem into semantic extraction and schema application makes debugging easier.  
+- Validating early with `jsonschema` improves reliability and user trust.  
+- Model outputs can be made safer with simple post-processing rules.
 
 ## Future Improvements
 
-- Refine prompt design and dynamic structuring techniques.  
-- Explore agentic AI capabilities for chunking and file parsing.  
-- Experiment with RAG (Retrieval-Augmented Generation) architecture to manage and search large text corpora.  
-- Implement similarity-based chunk retrieval and answer aggregation.  
-- Add more robust input validation and error handling.  
-- Extend file support to additional formats (e.g., docx, csv, yaml).  
-- Integrate schema validation to automatically check model outputs for compliance and catch errors proactively.
+- Support multiple test case uploads for bulk validation.  
+- Improve prompt dynamicity based on schema complexity.  
+- Add a real-time token estimator in the UI.  
+- Build a visual schema explorer to help users understand their schema structure.  
+- Explore LLM fine-tuning or custom function calling for high-accuracy schema conformance.
 
 ## Conclusion
 
-This was a rewarding and insightful project. Despite the time constraints, I was able to produce a functional and deployable product while learning about handling LLM token limits, prompt engineering, and secure deployments.
+This was a rewarding and insightful project. Despite the time constraints, I was able to produce a functional and deployable product while learning about structured LLM output, schema enforcement, and how modular prompt architectures lead to more reliable and debuggable systems.
